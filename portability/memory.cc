@@ -182,7 +182,7 @@ toku_malloc(size_t size) {
     }
 #endif
 
-    if (size > status.max_requested_size) {
+    if (toku_memory_do_stats && size > status.max_requested_size) {
         status.max_requested_size = size;
     }
     void *p = t_malloc ? t_malloc(size) : os_malloc(size);
@@ -209,7 +209,7 @@ void *toku_malloc_aligned(size_t alignment, size_t size) {
     }
 #endif
 
-    if (size > status.max_requested_size) {
+    if (toku_memory_do_stats && size > status.max_requested_size) {
         status.max_requested_size = size;
     }
     void *p = t_malloc_aligned ? t_malloc_aligned(alignment, size) : os_malloc_aligned(alignment, size);
@@ -248,7 +248,7 @@ toku_realloc(void *p, size_t size) {
     }
 #endif
 
-    if (size > status.max_requested_size) {
+    if (toku_memory_do_stats && size > status.max_requested_size) {
         status.max_requested_size = size;
     }
     size_t used_orig = p ? my_malloc_usable_size(p) : 0;
@@ -279,7 +279,7 @@ void *toku_realloc_aligned(size_t alignment, void *p, size_t size) {
     }
 #endif
 
-    if (size > status.max_requested_size) {
+    if (toku_memory_do_stats && size > status.max_requested_size) {
         status.max_requested_size = size;
     }
     size_t used_orig = p ? my_malloc_usable_size(p) : 0;
@@ -336,7 +336,7 @@ toku_xmalloc(size_t size) {
     }
 #endif
 
-    if (size > status.max_requested_size) {
+    if (toku_memory_do_stats && size > status.max_requested_size) {
         status.max_requested_size = size;
     }
     void *p = t_xmalloc ? t_xmalloc(size) : os_malloc(size);
@@ -366,7 +366,7 @@ void* toku_xmalloc_aligned(size_t alignment, size_t size)
     }
 #endif
 
-    if (size > status.max_requested_size) {
+    if (toku_memory_do_stats && size > status.max_requested_size) {
         status.max_requested_size = size;
     }
     void *p = t_xmalloc_aligned ? t_xmalloc_aligned(alignment, size) : os_malloc_aligned(alignment,size);
@@ -403,7 +403,7 @@ toku_xrealloc(void *v, size_t size) {
     }
 #endif
 
-    if (size > status.max_requested_size) {
+    if (toku_memory_do_stats && size > status.max_requested_size) {
         status.max_requested_size = size;
     }
     size_t used_orig = v ? my_malloc_usable_size(v) : 0;
