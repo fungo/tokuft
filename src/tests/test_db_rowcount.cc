@@ -427,11 +427,6 @@ static void test_insert_commit_delete_rollback(DB_ENV* env) {
 
     db->close(db, 0);
 }
-static inline uint64_t time_in_microsec() {
-    struct timeval t;
-    gettimeofday(&t, NULL);
-    return t.tv_sec * (1UL * 1000 * 1000) + t.tv_usec;
-}
 
 static int test_recount_insert_commit_progress(
     uint64_t count,
