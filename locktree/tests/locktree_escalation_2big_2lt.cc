@@ -37,6 +37,7 @@ Copyright (c) 2006, 2015, Percona and/or its affiliates. All rights reserved.
 #ident "Copyright (c) 2006, 2015, Percona and/or its affiliates. All rights reserved."
 
 #include <stdio.h>
+#include <atomic>
 #include "locktree.h"
 #include "test.h"
 
@@ -47,7 +48,7 @@ Copyright (c) 2006, 2015, Percona and/or its affiliates. All rights reserved.
 using namespace toku;
 
 static int verbose = 0;
-static int killed = 0;
+static std::atomic_int killed (0);
 
 static void locktree_release_lock(locktree *lt, TXNID txn_id, int64_t left_k, int64_t right_k) {
     range_buffer buffer;

@@ -48,13 +48,14 @@ Copyright (c) 2006, 2015, Percona and/or its affiliates. All rights reserved.
 // verify that only big txn's get tagged with > 1 second stalls
 
 #include <stdio.h>
+#include <atomic>
 #include "locktree.h"
 #include "test.h"
 
 using namespace toku;
 
 static int verbose = 0;
-static int killed = 0;
+static std::atomic_int killed (0);
 
 static void locktree_release_lock(locktree *lt, TXNID txn_id, int64_t left_k, int64_t right_k) {
     range_buffer buffer;
