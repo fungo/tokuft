@@ -88,7 +88,7 @@ size_t locktree_manager::get_max_lock_memory(void) {
 int locktree_manager::set_max_lock_memory(size_t max_lock_memory) {
     int r = 0;
     mutex_lock();
-    if (max_lock_memory < m_current_lock_memory) {
+    if (max_lock_memory < toku_unsafe_fetch(m_current_lock_memory)) {
         r = EDOM;
     } else {
         m_max_lock_memory = max_lock_memory;
@@ -290,11 +290,11 @@ void locktree_manager::note_mem_released(uint64_t mem_released) {
 }
 
 bool locktree_manager::out_of_locks(void) const {
-    return m_current_lock_memory >= m_max_lock_memory;
+    return toku_unsafe_fetch(m_current_lock_memory) >= m_max_lock_memory;
 }
 
 bool locktree_manager::over_big_threshold(void) {
-    return m_current_lock_memory >= m_max_lock_memory / 2;
+    return toku_unsafe_fetch(m_current_lock_memory) >= m_max_lock_memory / 2;
 }
 
 int locktree_manager::iterate_pending_lock_requests(lock_request_iterate_callback callback,
@@ -391,7 +391,7 @@ void locktree_manager::escalate_locktrees(locktree **locktrees, int num_locktree
     toku_mutex_lock(&m_escalation_mutex);
     m_escalation_count++;
     m_escalation_time += (t1 - t0);
-    m_escalation_latest_result = m_current_lock_memory;
+    m_escalation_latest_result = toku_unsafe_fetch(m_current_lock_memory);
     toku_mutex_unlock(&m_escalation_mutex);
 }
 

@@ -309,7 +309,7 @@ void lock_request::retry_all_lock_requests(locktree *lt) {
     // therefore, the lock request code must ensures that when lock requests
     // are added to this locktree, the bit is set.
     // see lock_request::insert_into_lock_requests()
-    if (!info->should_retry_lock_requests) {
+    if (!toku_unsafe_fetch(info->should_retry_lock_requests)) {
         return;
     }
 
