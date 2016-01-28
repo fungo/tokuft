@@ -42,10 +42,11 @@ Copyright (c) 2006, 2015, Percona and/or its affiliates. All rights reserved.
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <atomic>
 
 // write a test see if things happen in the right order.
 
-volatile int state = 0;
+std::atomic_int state (0);
 int verbose = 0;
 
 static void *f(void *arg) {
