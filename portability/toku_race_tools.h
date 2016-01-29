@@ -142,3 +142,8 @@ template <typename T>
 void toku_unsafe_set(T &dest, const T src) {
     toku_unsafe_set(&dest, src);
 }
+
+template <typename T>
+void toku_unsafe_add(T &dest, const T n) {
+    dest += n;
+}
