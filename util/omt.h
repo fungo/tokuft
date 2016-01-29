@@ -151,7 +151,7 @@ public:
 
     inline uint32_t get_index(void) const {
         TOKU_DRD_IGNORE_VAR(m_bitfield);
-        const uint32_t bits = m_bitfield;
+        const uint32_t bits = toku_unsafe_fetch(m_bitfield);
         TOKU_DRD_STOP_IGNORING_VAR(m_bitfield);
         return bits & MASK_INDEX;
     }
@@ -163,7 +163,7 @@ public:
 
     inline bool get_bit(void) const {
         TOKU_DRD_IGNORE_VAR(m_bitfield);
-        const uint32_t bits = m_bitfield;
+        const uint32_t bits = toku_unsafe_fetch(m_bitfield);
         TOKU_DRD_STOP_IGNORING_VAR(m_bitfield);
         return (bits & MASK_BIT) != 0;
     }
@@ -177,7 +177,8 @@ public:
         // ignore these bits just while we set this bit.  If there were a
         // race in setting the index, that would be a real race.
         TOKU_DRD_IGNORE_VAR(m_bitfield);
-        m_bitfield |= MASK_BIT;
+        const uint32_t bits = toku_unsafe_fetch(m_bitfield);
+        toku_unsafe_set(m_bitfield, bits | MASK_BIT); // m_bitfield |= MASK_BIT;
         TOKU_DRD_STOP_IGNORING_VAR(m_bitfield);
     }
 
