@@ -359,11 +359,11 @@ void increment_partitioned_counter(PARTITIONED_COUNTER pc, uint64_t amount)
 // Requires: No overflows.  This is a 64-bit unsigned counter.
 {
     struct local_counter *lc = get_or_alloc_thread_local_counter(pc);
-    lc->sum += amount;
+    toku_unsafe_add(lc->sum, amount); // lc->sum += amount;
 }
 
 static int sumit(struct local_counter *lc, uint64_t *sum) {
-    (*sum)+=lc->sum;
+    (*sum) += toku_unsafe_fetch(lc->sum);
     return 0;
 }
 
