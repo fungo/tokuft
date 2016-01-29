@@ -79,6 +79,7 @@ Copyright (c) 2006, 2015, Percona and/or its affiliates. All rights reserved.
 #include <portability/toku_atomic.h>
 #include <memory.h>
 #include <util/partitioned_counter.h>
+#include <atomic>
 #include "test.h"
 
 // The test code includes the fastest version I could figure out to make, implemented below.
@@ -317,12 +318,12 @@ struct test_arguments {
 static void *reader_test_fun (void *ta_v) {
     struct test_arguments *ta = (struct test_arguments *)ta_v;
     uint64_t lastval = 0;
-    while (ta->unfinished_count>0) {
+    while (toku_unsafe_fetch(ta->unfinished_count) > 0) {
 	uint64_t thisval = read_partitioned_counter(ta->pc);
 	assert(lastval <= thisval);
 	assert(thisval <= ta->limit+2);
 	lastval = thisval;
-	if (verboseness_cmdarg && (0==(thisval & (thisval-1)))) printf("ufc=%" PRIu64 " Thisval=%" PRIu64 "\n", ta->unfinished_count,thisval);
+	if (verboseness_cmdarg && (0==(thisval & (thisval-1)))) printf("ufc=%" PRIu64 " Thisval=%" PRIu64 "\n", toku_unsafe_fetch(ta->unfinished_count), thisval);
     }
     uint64_t thisval = read_partitioned_counter(ta->pc);
     assert(thisval==ta->limit+2); // we incremented two extra times in the test
@@ -375,7 +376,7 @@ static void do_testit (void) {
     }
 }
 
-volatile int spinwait=0;
+std::atomic_int spinwait (0); // volatile int spinwait=0;
 static void* test2_fun (void* mypc_v) {
     PARTITIONED_COUNTER mypc = (PARTITIONED_COUNTER)mypc_v;
     increment_partitioned_counter(mypc, 3);
